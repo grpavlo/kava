@@ -16,7 +16,15 @@ async function initDb() {
       unit TEXT NOT NULL,
       qty NUMERIC DEFAULT 0,
       "minQty" NUMERIC DEFAULT 0
-    )
+    );
+
+    CREATE TABLE IF NOT EXISTS inventory_log (
+      id SERIAL PRIMARY KEY,
+      item_id INTEGER REFERENCES inventory(id),
+      change NUMERIC NOT NULL,
+      reason TEXT NOT NULL,
+      created_at TIMESTAMPTZ DEFAULT now()
+    );
   `);
   const { rows } = await pool.query('SELECT COUNT(*) FROM inventory');
   if (Number(rows[0].count) === 0) {
@@ -61,6 +69,10 @@ app.post('/inventory/arrival', async (req, res) => {
   if (result.rowCount === 0) {
     return res.status(404).json({ error: 'Item not found' });
   }
+  await pool.query(
+    'INSERT INTO inventory_log(item_id, change, reason) VALUES ($1, $2, $3)',
+    [id, qty, 'arrival']
+  );
   res.json(result.rows[0]);
 });
 
@@ -73,7 +85,22 @@ app.post('/inventory/consume', async (req, res) => {
   if (result.rowCount === 0) {
     return res.status(404).json({ error: 'Item not found' });
   }
+  await pool.query(
+    'INSERT INTO inventory_log(item_id, change, reason) VALUES ($1, -$2, $3)',
+    [id, qty, 'consume']
+  );
   res.json(result.rows[0]);
+});
+
+app.get('/inventory/log', async (req, res) => {
+  const { rows } = await pool.query(
+    `SELECT l.id, i.name, l.change::float AS change, l.reason, l.created_at
+     FROM inventory_log l
+     JOIN inventory i ON i.id = l.item_id
+     ORDER BY l.id DESC
+     LIMIT 100`
+  );
+  res.json(rows);
 });
 
 const PORT = process.env.PORT || 3000;

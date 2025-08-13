@@ -29,3 +29,8 @@ export async function consume(id, qty) {
     body: JSON.stringify({ id, qty })
   });
 }
+
+export async function getLog() {
+  const res = await fetch(`${API_URL}/inventory/log`);
+  return res.json();
+}

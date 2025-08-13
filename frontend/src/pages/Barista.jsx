@@ -42,7 +42,10 @@ export default function Barista() {
         </TableHead>
         <TableBody>
           {items.map((i) => (
-            <TableRow key={i.id} sx={{ bgcolor: i.qty < i.minQty ? '#ffebee' : undefined }}>
+            <TableRow
+              key={i.id}
+              sx={{ bgcolor: i.qty < 0 ? '#ffcdd2' : i.qty < i.minQty ? '#ffebee' : undefined }}
+            >
               <TableCell>{i.name}</TableCell>
               <TableCell>
                 {i.qty} {i.unit}
