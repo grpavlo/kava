@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { getInventory, arrival, consume } from '../api';
 import {
   Container,
@@ -37,6 +38,9 @@ export default function Admin() {
       <Typography variant="h4" gutterBottom>
         Inventory (Admin)
       </Typography>
+      <Button component={Link} to="/admin/log" variant="outlined" sx={{ mb: 2 }}>
+        View Log
+      </Button>
       <Table>
         <TableHead>
           <TableRow>
@@ -47,7 +51,10 @@ export default function Admin() {
         </TableHead>
         <TableBody>
           {items.map((i) => (
-            <TableRow key={i.id} sx={{ bgcolor: i.qty < i.minQty ? '#ffebee' : undefined }}>
+            <TableRow
+              key={i.id}
+              sx={{ bgcolor: i.qty < 0 ? '#ffcdd2' : i.qty < i.minQty ? '#ffebee' : undefined }}
+            >
               <TableCell>{i.name}</TableCell>
               <TableCell>
                 {i.qty} {i.unit}

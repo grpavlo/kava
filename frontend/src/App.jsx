@@ -3,6 +3,7 @@ import { useState } from 'react';
 import Login from './pages/Login.jsx';
 import Admin from './pages/Admin.jsx';
 import Barista from './pages/Barista.jsx';
+import Log from './pages/Log.jsx';
 import './App.css';
 
 export default function App() {
@@ -15,6 +16,10 @@ export default function App() {
         <Route
           path="/admin"
           element={user?.role === 'admin' ? <Admin /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/admin/log"
+          element={user?.role === 'admin' ? <Log /> : <Navigate to="/login" />}
         />
         <Route
           path="/barista"
