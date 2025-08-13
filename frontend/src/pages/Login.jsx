@@ -1,6 +1,15 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { login } from '../api';
+import {
+  Container,
+  Typography,
+  TextField,
+  Select,
+  MenuItem,
+  Button,
+  Stack,
+} from '@mui/material';
 
 export default function Login({ onLogin }) {
   const [username, setUsername] = useState('');
@@ -15,18 +24,24 @@ export default function Login({ onLogin }) {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h2>Login</h2>
-      <input
-        placeholder="Username"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-      />
-      <select value={role} onChange={(e) => setRole(e.target.value)}>
-        <option value="admin">Admin</option>
-        <option value="barista">Barista</option>
-      </select>
-      <button type="submit">Sign in</button>
-    </form>
+    <Container sx={{ mt: 4 }}>
+      <Typography variant="h4" gutterBottom>
+        Login
+      </Typography>
+      <Stack spacing={2} component="form" onSubmit={handleSubmit}>
+        <TextField
+          label="Username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+        />
+        <Select value={role} onChange={(e) => setRole(e.target.value)}>
+          <MenuItem value="admin">Admin</MenuItem>
+          <MenuItem value="barista">Barista</MenuItem>
+        </Select>
+        <Button type="submit" variant="contained">
+          Sign in
+        </Button>
+      </Stack>
+    </Container>
   );
 }
